@@ -5,22 +5,29 @@ ENV DEBIAN_FRONTEND=noninteractive \
     HF_HUB_DISABLE_SYMLINKS_WARNING=1 \
     PYTHONUNBUFFERED=1
 
+# ---------- System & Python packages ----------------------------------
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3 python3-pip python3-venv \
+        build-essential cmake git curl libgl1 && \
+    rm -rf /var/lib/apt/lists/*
+
 # ---------- Python wheels (Torch first) -------------------------------
 RUN python3 -m pip install --no-cache-dir -U pip
 
-# 1️⃣  PyTorch + vision + audio from the CUDA-12.1 index
+# 1️⃣  PyTorch family from CUDA-12.1 index
 RUN python3 -m pip install --no-cache-dir \
       --index-url https://download.pytorch.org/whl/cu121 \
       torch==2.3.0 \
       torchvision==0.18.0 \
       torchaudio==2.3.0
 
-# 2️⃣  Back to the default index for the rest (xformers, FastAPI, etc.)
+# 2️⃣  Back to default index for remaining deps
 COPY requirements.txt /tmp/
 RUN python3 -m pip install --no-cache-dir xformers==0.0.27 && \
     python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
-    
-# ---------- Pre-download model weights (cuts cold-start) --------------
+
+# ---------- Pre-download model weights --------------------------------
 RUN python3 - <<'PY'
 from huggingface_hub import snapshot_download
 snapshot_download("stabilityai/stable-diffusion-xl-base-1.0",
