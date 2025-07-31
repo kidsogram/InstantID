@@ -5,26 +5,21 @@ ENV DEBIAN_FRONTEND=noninteractive \
     HF_HUB_DISABLE_SYMLINKS_WARNING=1 \
     PYTHONUNBUFFERED=1
 
-# ---------- System + Python deps -------------------------------------
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        python3 python3-pip python3-venv \
-        build-essential cmake git curl libgl1 && \
-    rm -rf /var/lib/apt/lists/*
-
 # ---------- Python wheels (Torch first) -------------------------------
 RUN python3 -m pip install --no-cache-dir -U pip
 
+# 1️⃣  PyTorch + vision + audio from the CUDA-12.1 index
 RUN python3 -m pip install --no-cache-dir \
-      --extra-index-url https://download.pytorch.org/whl/cu121 \
-      torch==2.3.0+cu121 \
-      torchvision==0.18.0+cu121 \
-      xformers==0.0.27
+      --index-url https://download.pytorch.org/whl/cu121 \
+      torch==2.3.0 \
+      torchvision==0.18.0 \
+      torchaudio==2.3.0
 
-# ---------- Remaining Python deps -------------------------------------
+# 2️⃣  Back to the default index for the rest (xformers, FastAPI, etc.)
 COPY requirements.txt /tmp/
-RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
-
+RUN python3 -m pip install --no-cache-dir xformers==0.0.27 && \
+    python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
+    
 # ---------- Pre-download model weights (cuts cold-start) --------------
 RUN python3 - <<'PY'
 from huggingface_hub import snapshot_download
