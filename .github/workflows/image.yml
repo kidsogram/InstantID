@@ -1,0 +1,42 @@
+name: Build-Push-Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: docker/setup-qemu-action@v3
+    - uses: docker/setup-buildx-action@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build & Push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USER }}/instantid-book-api:${{ github.sha }}
+        platforms: linux/amd64
+
+    - name: Deploy to Salad
+      env:
+        KEY:   ${{ secrets.SALAD_API_KEY }}
+        ORG:   ${{ secrets.SALAD_ORG }}
+        PROJ:  ${{ secrets.SALAD_PROJECT }}
+        IMG:   ${{ secrets.DOCKERHUB_USER }}/instantid-book-api:${{ github.sha }}
+      run: |
+        jq -n --arg img "$IMG" '
+        { name:"instantid-api", image:$img, replicas:2,
+          resources:{cpu:4000,memory:16384,gpu_classes:["rtx3060","rtx4070"]},
+          ports:[{protocol:"http",port:8000}] }' > payload.json
+        curl -X POST -H "Salad-Api-Key: $KEY" -H "Content-Type: application/json" \
+             -d @payload.json \
+             "https://api.salad.com/api/public/organizations/$ORG/projects/$PROJ/container-groups"
