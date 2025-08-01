@@ -18,13 +18,15 @@ RUN python3 -m pip install --no-cache-dir -U pip
 # 1️⃣  PyTorch family from CUDA-12.1 index
 RUN python3 -m pip install --no-cache-dir \
       --index-url https://download.pytorch.org/whl/cu121 \
-      torch==2.3.0 \
-      torchvision==0.18.0 \
-      torchaudio==2.3.0
+      torch==2.3.1 \
+      torchvision==0.18.1 \
+      torchaudio==2.3.1
 
 # 2️⃣  Back to default index for remaining deps
 COPY requirements.txt /tmp/
-RUN python3 -m pip install --no-cache-dir xformers==0.0.27 && \
+RUN python3 -m pip install --no-cache-dir \
+      --extra-index-url https://download.pytorch.org/whl/cu121 \
+      xformers==0.0.27 && \
     python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
 
 # ---------- Pre-download model weights --------------------------------
