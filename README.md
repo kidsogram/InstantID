@@ -30,6 +30,7 @@ InstantID is a new state-of-the-art tuning-free method to achieve ID-Preserving 
 - [2024/01/31] 🔥 [OneDiff](https://github.com/siliconflow/onediff?tab=readme-ov-file#easy-to-use) now supports accelerated inference for InstantID, check [this](https://github.com/siliconflow/onediff/blob/main/benchmarks/instant_id.py) for details!
 - [2024/01/23] 🔥 Our pipeline has been merged into [diffusers](https://github.com/huggingface/diffusers/blob/main/examples/community/pipeline_stable_diffusion_xl_instantid.py)!
 - [2024/01/22] 🔥 We release the [pre-trained checkpoints](https://huggingface.co/InstantX/InstantID), [inference code](https://github.com/InstantID/InstantID/blob/main/infer.py) and [gradio demo](https://huggingface.co/spaces/InstantX/InstantID)!
+- **InsightFace face models and these checkpoints are licensed for research use only.** See the [Disclaimer](#disclaimer) for details.
 - [2024/01/15] 🔥 We release the [technical report](https://arxiv.org/abs/2401.07519).
 - [2023/12/11] 🔥 We launch the [project page](https://instantid.github.io/).
 
@@ -232,7 +233,9 @@ The repository also provides a lightweight API in `app/main.py`.
        -H "Content-Type: application/json" \
        -d '{"source_image":"<base64>","prompt":"little firefighter"}'
   ```
-  The response contains a base64 encoded PNG under the `image` field.
+The response contains a base64 encoded PNG under the `image` field.
+
+**Warning:** For simplicity, `app/main.py` disables the Stable Diffusion safety checker. Generated images might include NSFW content. Enable the safety checker or add your own content filtering when deploying this in production.
 
 ## Docker Build & Salad Deployment
 Use the provided `Dockerfile` to build a container image:
@@ -273,6 +276,7 @@ Before building, manually download the **antelopev2** face encoder to `models/an
 - Thanks to [SiliconFlow](https://github.com/siliconflow) for their OneDiff integration of InstantID! 
 
 ## Disclaimer
+**Research-only:** The face models from InsightFace and all checkpoints provided in this repository may not be used for commercial purposes.
 The code of InstantID is released under [Apache License](https://github.com/InstantID/InstantID?tab=Apache-2.0-1-ov-file#readme) for both academic and commercial usage. **However, both manual-downloading and auto-downloading face models from insightface are for non-commercial research purposes only** according to their [license](https://github.com/deepinsight/insightface?tab=readme-ov-file#license). **Our released checkpoints are also for research purposes only**. Users are granted the freedom to create images using this tool, but they are obligated to comply with local laws and utilize it responsibly. The developers will not assume any responsibility for potential misuse by users.
 
 ## Star History
