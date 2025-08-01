@@ -8,10 +8,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # ---------- System & Python packages ----------------------------------
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        python3 python3-pip python3-venv \
+        python3 python3-pip python3-venv python3-dev \
         build-essential cmake git curl libgl1 && \
     rm -rf /var/lib/apt/lists/*
-
+    
 # ---------- Python wheels (Torch first) -------------------------------
 RUN python3 -m pip install --no-cache-dir -U pip
 
