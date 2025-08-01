@@ -85,7 +85,14 @@ export HF_ENDPOINT=https://hf-mirror.com
 huggingface-cli download --resume-download InstantX/InstantID --local-dir checkpoints --local-dir-use-symlinks False
 ```
 
-For face encoder, you need to manually download via this [URL](https://github.com/deepinsight/insightface/issues/1896#issuecomment-1023867304) to `models/antelopev2` as the default link is invalid. Once you have prepared all models, the folder tree should be like:
+Download the **antelopev2** face encoder before building the Docker image:
+
+```bash
+mkdir -p models/antelopev2
+wget -O models/antelopev2/model.onnx https://example.com/path/to/antelopev2.onnx
+```
+
+This file **must** exist prior to running `docker build`. Once you have prepared all models, the folder tree should look like:
 
 ```
   .
