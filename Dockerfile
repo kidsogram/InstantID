@@ -30,12 +30,25 @@ RUN python3 -m pip install --no-cache-dir \
     python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
 
 # ---------- Pre-download model weights --------------------------------
+ARG HF_TOKEN=""
 RUN python3 - <<'PY'
+import os
 from huggingface_hub import snapshot_download
-snapshot_download("stabilityai/stable-diffusion-xl-base-1.0",
-                  local_dir="/models/sdxl", revision="fp16", max_workers=8)
-snapshot_download("InstantX/InstantID",
-                  local_dir="/models/instantid", max_workers=8)
+
+token = os.getenv("HF_TOKEN") or None
+snapshot_download(
+    "stabilityai/stable-diffusion-xl-base-1.0",
+    local_dir="/models/sdxl",
+    revision="fp16",
+    max_workers=8,
+    token=token,
+)
+snapshot_download(
+    "InstantX/InstantID",
+    local_dir="/models/instantid",
+    max_workers=8,
+    token=token,
+)
 PY
 
 ENV MODEL_DIR=/models
