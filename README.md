@@ -71,14 +71,11 @@ hf_hub_download(repo_id="InstantX/InstantID", filename="ControlNetModel/config.j
 hf_hub_download(repo_id="InstantX/InstantID", filename="ControlNetModel/diffusion_pytorch_model.safetensors", local_dir="./checkpoints")
 hf_hub_download(repo_id="InstantX/InstantID", filename="ip-adapter.bin", local_dir="./checkpoints")
 ```
+Or install the requirements before running the download script:
 
-Or run the following command to download all models:
-
-```python
-pip install -r gradio_demo/requirements.txt
-python gradio_demo/download_models.py
+```bash
+pip install -r requirements.txt
 ```
-
 If you cannot access to Huggingface, you can use [hf-mirror](https://hf-mirror.com/) to download models.
 ```python
 export HF_ENDPOINT=https://hf-mirror.com
@@ -105,7 +102,7 @@ This file **must** exist prior to running `docker build`. Once you have prepared
 
 ## Usage
 
-If you want to reproduce results in the paper, please refer to the code in [infer_full.py](infer_full.py). If you want to compare the results with other methods, even without using depth-controlnet, it is recommended that you use this code. 
+If you want to reproduce results in the paper, please refer to the code in [infer.py](infer.py). If you want to compare the results with other methods, even without using depth-controlnet, it is recommended that you use this code. 
 
 If you are pursuing better results, it is recommended to follow [InstantID-Rome](https://github.com/instantX-research/InstantID-Rome).
 
@@ -206,16 +203,11 @@ num_inference_steps = 10
 guidance_scale = 0
 ```
 
-## Start a local gradio demo <a href='https://github.com/gradio-app/gradio'><img src='https://img.shields.io/github/stars/gradio-app/gradio'></a>
+## Start the API server
 Run the following command:
 
-```python
-python gradio_demo/app.py
-```
-
-or MultiControlNet version:
-```python
-gradio_demo/app-multicontrolnet.py 
+```bash
+uvicorn app.main:app --reload
 ```
 
 ## Usage Tips
