@@ -232,6 +232,34 @@ gradio_demo/app-multicontrolnet.py
 - We have not supported multi-person yet, only use the largest face as reference facial landmarks.
 - We provide a [style template](https://github.com/ahgsql/StyleSelectorXL/blob/main/sdxl_styles.json) for reference.
 
+## FastAPI Endpoints
+The repository also provides a lightweight API in `app/main.py`.
+
+- `GET /health` – check service status
+  ```bash
+  curl http://localhost:8000/health
+  # {"status":"healthy","gpu":true}
+  ```
+- `POST /generate` – generate an image from a base64 headshot and text prompt
+  ```bash
+  curl -X POST http://localhost:8000/generate \
+       -H "Content-Type: application/json" \
+       -d '{"source_image":"<base64>","prompt":"little firefighter"}'
+  ```
+  The response contains a base64 encoded PNG under the `image` field.
+
+## Docker Build & Salad Deployment
+Use the provided `Dockerfile` to build a container image:
+
+```bash
+docker build -t myname/instantid .
+docker run -p 8000:8000 myname/instantid
+```
+
+The GitHub Actions workflow [`image.yml`](.github/workflows/image.yml) shows how the project automatically builds and pushes this image and then deploys it to [Salad](https://salad.com) using their API.
+
+Before building, manually download the **antelopev2** face encoder to `models/antelopev2` so the container has everything it needs at runtime.
+
 ## Community Resources
 
 ### Replicate Demo
