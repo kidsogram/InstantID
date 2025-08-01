@@ -237,10 +237,12 @@ The response contains a base64 encoded PNG under the `image` field.
 **Warning:** For simplicity, `app/main.py` disables the Stable Diffusion safety checker. Generated images might include NSFW content. Enable the safety checker or add your own content filtering when deploying this in production.
 
 ## Docker Build & Salad Deployment
-Use the provided `Dockerfile` to build a container image:
+Use the provided `Dockerfile` to build a container image. The build step
+downloads model weights from Hugging Face, which requires an access token. Pass
+your token via the `HF_TOKEN` build argument:
 
 ```bash
-docker build -t myname/instantid .
+docker build --build-arg HF_TOKEN=YOUR_HF_TOKEN -t myname/instantid .
 docker run -p 8000:8000 myname/instantid
 ```
 
