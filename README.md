@@ -22,7 +22,6 @@ Huaxia Li<sup>2</sup> · Xu Tang<sup>2</sup> · Yao Hu<sup>2</sup>
 
 InstantID is a new state-of-the-art tuning-free method to achieve ID-Preserving generation with only single image, supporting various downstream tasks.
 
-<img src='assets/applications.png'>
 
 ## Release
 - [2024/07/18] 🔥 We are training InstantID for [Kolors](https://huggingface.co/Kwai-Kolors/Kolors-diffusers). The weight requires significant computational power, which is currently in the process of iteration. After the model training is completed, it will be open-sourced. The latest checkpoint results are referenced in [Kolors Version](#kolors-version). 
@@ -38,27 +37,15 @@ InstantID is a new state-of-the-art tuning-free method to achieve ID-Preserving 
 
 ### Stylized Synthesis
 
-<p align="center">
-  <img src="assets/StylizedSynthesis.png">
-</p>
 
 ### Comparison with Previous Works
 
-<p align="center">
-  <img src="assets/compare-a.png">
-</p>
 
 Comparison with existing tuning-free state-of-the-art techniques. InstantID achieves better fidelity and retain good text editability (faces and styles blend better).
 
-<p align="center">
-  <img src="assets/compare-c.png">
-</p>
 
 Comparison with pre-trained character LoRAs. We don't need multiple images and still can achieve competitive results as LoRAs without any training.
 
-<p align="center">
-  <img src="assets/compare-b.png">
-</p>
 
 Comparison with InsightFace Swapper (also known as ROOP or Refactor). However, in non-realistic style, our work is more flexible on the integration of face and background.
 
@@ -69,7 +56,6 @@ We have adapted InstantID for [Kolors](https://huggingface.co/Kwai-Kolors/Kolors
 
 | demo | demo | demo |
 |:-----:|:-----:|:-----:|
-<img src="./assets/kolor/demo_1.jpg" >|<img src="./assets/kolor/demo_2.jpg" >|<img src="./assets/kolor/demo_3.jpg" >|
 
 
 
