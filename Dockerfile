@@ -39,7 +39,6 @@ token = os.getenv("HF_TOKEN") or None
 snapshot_download(
     "stabilityai/stable-diffusion-xl-base-1.0",
     local_dir="/models/sdxl",
-    revision="fp16",
     max_workers=8,
     token=token,
 )
