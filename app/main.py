@@ -6,7 +6,9 @@ from diffusers.models import ControlNetModel
 from insightface.app import FaceAnalysis
 
 # ── constants ──────────────────────────────────────────────────────────
-MODELS = "/models"                      # baked into the Docker image
+# Location of model weights. Override with the MODELS environment variable
+# when launching the container if your models live elsewhere.
+MODELS = os.getenv("MODELS", "/models")
 DEVICE  = "cuda" if torch.cuda.is_available() else "cpu"
 
 # ── load InstantID pipeline once at startup ────────────────────────────

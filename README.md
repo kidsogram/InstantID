@@ -89,7 +89,7 @@ mkdir -p models/antelopev2
 wget -O models/antelopev2/model.onnx https://example.com/path/to/antelopev2.onnx
 ```
 
-This file **must** exist prior to running `docker build`. Once you have prepared all models, the folder tree should look like:
+This file **must** exist prior to running the container. Once you have prepared all models, the folder tree should look like:
 
 ```
   .
@@ -237,18 +237,17 @@ The response contains a base64 encoded PNG under the `image` field.
 **Warning:** For simplicity, `app/main.py` disables the Stable Diffusion safety checker. Generated images might include NSFW content. Enable the safety checker or add your own content filtering when deploying this in production.
 
 ## Docker Build & Salad Deployment
-Use the provided `Dockerfile` to build a container image. The build step
-downloads model weights from Hugging Face, which requires an access token. Pass
-your token via the `HF_TOKEN` build argument:
+Use the provided `Dockerfile` to build a container image. Model weights are not
+downloaded during the build—mount them at runtime instead. The default location
+inside the container is `/models` and can be overridden with the `MODELS`
+environment variable.
 
 ```bash
-docker build --build-arg HF_TOKEN=YOUR_HF_TOKEN -t myname/instantid .
-docker run -p 8000:8000 myname/instantid
+docker build -t myname/instantid .
+docker run -p 8000:8000 -v /absolute/path/to/models:/models myname/instantid
 ```
 
 The GitHub Actions workflow [`image.yml`](.github/workflows/image.yml) shows how the project automatically builds and pushes this image and then deploys it to [Salad](https://salad.com) using their API.
-
-Before building, manually download the **antelopev2** face encoder to `models/antelopev2` so the container has everything it needs at runtime.
 
 ## Community Resources
 

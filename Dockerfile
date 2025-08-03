@@ -29,27 +29,10 @@ RUN python3 -m pip install --no-cache-dir \
       xformers==0.0.28 && \
     python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
 
-# ---------- Pre-download model weights --------------------------------
-ARG HF_TOKEN=""
-RUN python3 - <<'PY'
-import os
-from huggingface_hub import snapshot_download
-
-token = os.getenv("HF_TOKEN") or None
-snapshot_download(
-    "stabilityai/stable-diffusion-xl-base-1.0",
-    local_dir="/models/sdxl",
-    max_workers=8,
-    token=token,
-)
-snapshot_download(
-    "InstantX/InstantID",
-    local_dir="/models/instantid",
-    max_workers=8,
-    token=token,
-)
-PY
-
+# ---------- Model directory -------------------------------------------
+# Models are expected to be mounted at runtime under /models.  Adjust the
+# path with the MODELS environment variable when launching the container
+# if necessary.
 ENV MODEL_DIR=/models
 
 # ---------- Copy your service code ------------------------------------
