@@ -8,3 +8,4 @@ controlnet_aux>=0.0.6
 fastapi==0.111.0
 uvicorn[standard]==0.30.0
 pillow
+huggingface-hub
