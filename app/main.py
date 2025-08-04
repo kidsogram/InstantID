@@ -8,8 +8,11 @@ from huggingface_hub import hf_hub_download
 
 # ── constants ──────────────────────────────────────────────────────────
 # Location of model weights. Override with the MODELS environment variable
-# when launching the container if your models live elsewhere.
-MODELS = os.getenv("MODELS", "/models")
+# when launching the container if your models live elsewhere. Default to a
+# Windows-friendly path when running on Windows, otherwise use the Linux
+# container default.
+default_models_dir = "C:\\models" if os.name == "nt" else "/models"
+MODELS = os.getenv("MODELS", default_models_dir)
 DEVICE  = "cuda" if torch.cuda.is_available() else "cpu"
 
 # ── load InstantID pipeline once at startup ────────────────────────────
@@ -32,8 +35,9 @@ else:
         torch_dtype=torch.float16,
     )
 
+base_model_path = os.path.join(MODELS, "sdxl")
 pipe = StableDiffusionXLInstantIDPipeline.from_pretrained(
-    f"{MODELS}/sdxl",
+    base_model_path,
     controlnet=controlnet,
     torch_dtype=torch.float16,
     variant="fp16",

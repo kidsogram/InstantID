@@ -239,8 +239,9 @@ The response contains a base64 encoded PNG under the `image` field.
 ## Docker Build & Salad Deployment
 Use the provided `Dockerfile` to build a container image. Model weights are not
 downloaded during the build—mount them at runtime instead. The default location
-inside the container is `/models` and can be overridden with the `MODELS`
-environment variable.
+inside the Linux container is `/models`. When running on Windows outside a
+container, the scripts look for models under `C:\\models`. In either case you
+can override the location by setting the `MODELS` environment variable.
 
 ```bash
 docker build -t myname/instantid .
