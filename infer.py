@@ -11,7 +11,8 @@ from insightface.app import FaceAnalysis
 from pipeline_stable_diffusion_xl_instantid import StableDiffusionXLInstantIDPipeline, draw_kps
 
 
-MODELS = os.getenv("MODELS", "./checkpoints")
+default_models_dir = "C:\\models" if os.name == "nt" else "./checkpoints"
+MODELS = os.getenv("MODELS", default_models_dir)
 
 def resize_img(input_image, max_side=1280, min_side=1024, size=None, 
                pad_to_max_side=False, mode=Image.BILINEAR, base_pixel_number=64):
@@ -44,13 +45,13 @@ if __name__ == "__main__":
     app.prepare(ctx_id=0, det_size=(640, 640))
 
     # Path to InstantID models
-    face_adapter = f'{MODELS}/instantid/ip-adapter.bin'
-    controlnet_path = f'{MODELS}/instantid/ControlNetModel'
+    face_adapter = os.path.join(MODELS, 'instantid', 'ip-adapter.bin')
+    controlnet_path = os.path.join(MODELS, 'instantid', 'ControlNetModel')
 
     # Load pipeline
     controlnet = ControlNetModel.from_pretrained(controlnet_path, torch_dtype=torch.float16)
 
-    base_model_path = f'{MODELS}/sdxl'
+    base_model_path = os.path.join(MODELS, 'sdxl')
 
     pipe = StableDiffusionXLInstantIDPipeline.from_pretrained(
         base_model_path,
