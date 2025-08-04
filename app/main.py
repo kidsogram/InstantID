@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from diffusers.models import ControlNetModel
 from insightface.app import FaceAnalysis
+from huggingface_hub import hf_hub_download
 
 # ── constants ──────────────────────────────────────────────────────────
 # Location of model weights. Override with the MODELS environment variable
@@ -17,10 +18,19 @@ from pipeline_stable_diffusion_xl_instantid import (
     draw_kps,
 )
 
-controlnet = ControlNetModel.from_pretrained(
-    f"{MODELS}/instantid/ControlNetModel",
-    torch_dtype=torch.float16,
-)
+controlnet_path = os.path.join(MODELS, "instantid", "ControlNetModel")
+config_file = os.path.join(controlnet_path, "config.json")
+if os.path.exists(config_file):
+    controlnet = ControlNetModel.from_pretrained(
+        controlnet_path,
+        torch_dtype=torch.float16,
+    )
+else:
+    controlnet = ControlNetModel.from_pretrained(
+        "InstantX/InstantID",
+        subfolder="ControlNetModel",
+        torch_dtype=torch.float16,
+    )
 
 pipe = StableDiffusionXLInstantIDPipeline.from_pretrained(
     f"{MODELS}/sdxl",
@@ -30,7 +40,13 @@ pipe = StableDiffusionXLInstantIDPipeline.from_pretrained(
     safety_checker=None,
 ).to(DEVICE)
 
-pipe.load_ip_adapter_instantid(f"{MODELS}/instantid/ip-adapter.bin")
+ip_adapter_path = os.path.join(MODELS, "instantid", "ip-adapter.bin")
+if not os.path.exists(ip_adapter_path):
+    ip_adapter_path = hf_hub_download(
+        repo_id="InstantX/InstantID",
+        filename="ip-adapter.bin",
+    )
+pipe.load_ip_adapter_instantid(ip_adapter_path)
 
 face_analyzer = FaceAnalysis(
     name="antelopev2",
